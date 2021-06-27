@@ -34,7 +34,13 @@ print(dd)
 dd.rename(columns={'E3ME_REF':'E3ME_Ref', 'E3ME_COVID':'E3ME_COVID', 'E3ME_GREEN':'E3ME_Green', \
                    'GEM-E3_REF':'GEM-E3_Ref','GEM-E3_COVID':'GEM-E3_COVID', 'GEM-E3_GREEN':'GEM-E3_Green', \
                        'IMAGE_REF':'IMAGE_Ref', 'IMAGE_COVID':'IMAGE_COVID', 'IMAGE_GREEN':'IMAGE_Green'}, inplace=True)
-result= dd
+# Multiply 2019 emission level. 2019 emission level = 36.4408 (Gt CO2/ y)
+# Source: Le Quéré, C., Peters, G.P., Friedlingstein, P. et al. Fossil CO2 emissions in the post-COVID-19 era. Nat. Clim. Chang. 11, 197–199 (2021). 
+# https://doi.org/10.1038/s41558-021-01001-0 Fossil CO 2 emissions in the post-COVID-19 era | Nature Climate Change
+CO2_2019= 36.4408
+result= dd/100*CO2_2019
+d2 = d2/100*CO2_2019
+print(result)
 # Dataframes for CO2 Plot 
 E3ME_REFERENCE = result["E3ME_Ref"]
 E3ME_COVID = result["E3ME_COVID"]
@@ -77,11 +83,11 @@ IMAGE_GREEN_GDP = d3["IMAGE_Green"]
 fig, (ax2, ax1) = plt.subplots(1, 2, sharey=False)
 plt.figure(figsize= (18.5, 21))
 plt.title("", fontsize=20, fontweight="bold") 
-ax1.set_ylim([58, 122])
+ax1.set_ylim([19, 46])
 ax1.set_xlim([2018.5,2031])
 # Min and Max of 2 degree scenarios to show on the plot
-p1= (minValue-58)/(122-58)
-p2=(maxValue-58)/(122-58)
+p1= (minValue-19)/(46-19)
+p2=(maxValue-19)/(46-19)
 
 # CO2 subplot
 IMAGE_REFERENCE.plot(ax=ax1, title= '(b)', style='tab:blue', linestyle= '-.', linewidth = '2')
@@ -121,7 +127,7 @@ ax1.fill_between(result.index, result.E3ME_Green, result.IMAGE_Green,
     where= result.E3ME_Green >= result.IMAGE_Green, facecolor=(0.8, 0.9, 0.5), alpha=0.2,interpolate=True)
 
 
-ylab = ax1.set_ylabel('CO\u2082 emissions (2019 index)', fontsize=22)
+ylab = ax1.set_ylabel('CO\u2082 emissions (Gt CO\u2082/yr)\n(normalized with 2019 level)', fontsize=22)
 xlab = ax1.set_xlabel(None)
 
 ax1.spines['top'].set_visible(False)
